@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+
+  payment_app:
+    container_name: payment
+    build:
+      ./
+    command: uvicorn main:payment --host 0.0.0.0 --port 6000
+    ports:
+      - "6000:6000"
+    networks:
+      - sql
+      - nginx
+
+
+networks:
+    sql:
+      external: true
+    nginx:
+      external: true
