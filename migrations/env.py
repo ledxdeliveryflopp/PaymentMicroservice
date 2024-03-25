@@ -1,15 +1,13 @@
 import asyncio
 from logging.config import fileConfig
-
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
 from alembic import context
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 from src.settings.db import Base
+from src.settings.settings import settings
 
 config = context.config
 
@@ -19,17 +17,27 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 from src.payment.models import PaymentModel, UserModel
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+exclude_tables = settings.alembic_settings.alembic_exclude_tables
+
+
+def include_object(object, name, type_, *args, **kwargs):
+    """Исключение определенных таблиц"""
+    if type_ == 'table' and name in exclude_tables:
+        return False
+    else:
+        return True
 
 
 def run_migrations_offline() -> None:
@@ -48,16 +56,15 @@ def run_migrations_offline() -> None:
     context.configure(
         url=url,
         target_metadata=target_metadata,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        include_object=include_object,
+        include_schemas=False
     )
-
     with context.begin_transaction():
         context.run_migrations()
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(connection=connection, target_metadata=target_metadata, include_object=include_object)
 
     with context.begin_transaction():
         context.run_migrations()
@@ -83,7 +90,6 @@ async def run_async_migrations() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
-
     asyncio.run(run_async_migrations())
 
 
