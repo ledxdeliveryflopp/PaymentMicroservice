@@ -22,3 +22,7 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+exclude = ["migrations", "usr", "venv", "tmp", "var", "migrations"]
