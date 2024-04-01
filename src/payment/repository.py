@@ -13,7 +13,7 @@ class PaymentRepository(SessionService):
     """Репазиторий для взаимодествия заказов с бд"""
     request: Request
 
-    async def get_token_payload(self):
+    async def get_token_payload(self) -> dict:
         """Email и роль пользователя из токена"""
         header_token = self.request.headers.get('Authorization')
         header_token = header_token.replace("Bearer ", "")
@@ -22,19 +22,19 @@ class PaymentRepository(SessionService):
         user_email = token_payload.get("user_email")
         return {'email': user_email}
 
-    async def get_user_by_email(self, email: str):
+    async def get_user_by_email(self, email: str) -> UserModel:
         """Получить пользователя по Email"""
         user = await self.session.execute(Select(UserModel).filter(UserModel.email == email))
         if not user:
             raise UserDontExist
         return user.scalar()
 
-    async def find_payment_object_by_id(self, id: int):
+    async def find_payment_object_by_id(self, id: int) -> PaymentObjectModel:
         """Получить заказ по ID"""
         payment_object = await self.session.execute(Select(PaymentObjectModel).filter(PaymentObjectModel.id == id))
         return payment_object.scalar()
 
-    async def find_payment_by_code(self, code: str):
+    async def find_payment_by_code(self, code: str) -> PaymentModel:
         """Найти заказ по коду"""
         payment = await self.session.execute(Select(PaymentModel).filter(PaymentModel.code == code))
         return payment.scalar()

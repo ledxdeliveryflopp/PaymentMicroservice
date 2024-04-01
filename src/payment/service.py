@@ -18,7 +18,7 @@ Configuration.secret_key = settings.yookassa_settings.secret_key
 class PaymentService(PaymentRepository):
     """Сервис заказов"""
 
-    async def create_payment_and_url(self, payment_schemas: PaymentBaseSchemas):
+    async def create_payment_and_url(self, payment_schemas: PaymentBaseSchemas) -> dict:
         """Создания ссылки для оплаты и данных для заказа"""
         token_data = await self.get_token_payload()
         user_email = token_data.get("email")
@@ -54,7 +54,7 @@ class PaymentService(PaymentRepository):
         await self.create_object(save_object=db_payment)
         return {"confirmation_url": yookassa_confirmation_url, "payment_id": yookassa_payment_id}
 
-    async def __check_yookassa_payment(self, code: str):
+    async def __check_yookassa_payment(self, code: str) -> str:
         """Проверка платежа на стороне Yookassa"""
         payment_in_db = await self.find_payment_by_code(code=code)
         idempotence_key = str(uuid.uuid4())
@@ -71,7 +71,7 @@ class PaymentService(PaymentRepository):
         except requests.exceptions.HTTPError:
             return "canceled"
 
-    async def verify_payment(self, check_schemas: PaymentCheckSchemas):
+    async def verify_payment(self, check_schemas: PaymentCheckSchemas) -> dict:
         """Проверка платежа не стороне сервиса"""
         payment_yookassa = await self.__check_yookassa_payment(code=check_schemas.payment_code)
         print(payment_yookassa)
@@ -93,7 +93,7 @@ class PaymentService(PaymentRepository):
         await self.create_object(save_object=payment_db)
         return {"detail": "success"}
 
-    async def get_current_user_payments(self):
+    async def get_current_user_payments(self) -> object:
         """Все платежи текущего пользователя"""
         token_data = await self.get_token_payload()
         user_email = token_data.get("email")

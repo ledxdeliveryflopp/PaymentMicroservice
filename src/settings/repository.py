@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 class SessionRepository(ABC):
     session: AsyncSession
 
-    async def session_add(self, save_object) -> object:
+    async def session_add(self, save_object) -> object | dict:
         """Создание объекта"""
         try:
             self.session.add(instance=save_object)
