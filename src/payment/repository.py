@@ -1,17 +1,16 @@
 from dataclasses import dataclass
 from jose import jwt
 from sqlalchemy import Select
-from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from src.payment.models import PaymentObjectModel, PaymentModel, UserModel
 from src.settings.exceptions import UserDontExist
+from src.settings.service import SessionService
 from src.settings.settings import settings
 
 
 @dataclass
-class PaymentRepository:
+class PaymentRepository(SessionService):
     """Репазиторий для взаимодествия заказов с бд"""
-    session: AsyncSession
     request: Request
 
     async def get_token_payload(self):
