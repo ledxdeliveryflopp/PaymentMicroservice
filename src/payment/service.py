@@ -57,6 +57,8 @@ class PaymentService(PaymentRepository):
     async def __check_yookassa_payment(self, code: str) -> str:
         """Проверка платежа на стороне Yookassa"""
         payment_in_db = await self.find_payment_by_code(code=code)
+        if not payment_in_db:
+            raise BadPaymentId
         idempotence_key = str(uuid.uuid4())
         try:
             response = Payment.capture(

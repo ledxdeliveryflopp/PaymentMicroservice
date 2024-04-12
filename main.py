@@ -4,7 +4,7 @@ from src.payment.router import payment_router
 
 payment = FastAPI()
 
-origins = [
+origins: list[str] = [
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:7000",

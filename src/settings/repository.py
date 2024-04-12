@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 @dataclass
 class SessionRepository(ABC):
+    """Репозиторий для взаимодействия с БД"""
     session: AsyncSession
 
     async def session_add(self, save_object) -> object | dict:
