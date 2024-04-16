@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class JwtSettings(BaseSettings):
+    """Настройки для JWT токенов"""
     jwt_secret: str
     jwt_algorithm: str
 
@@ -10,6 +11,7 @@ class JwtSettings(BaseSettings):
 
 
 class SqlSettings(BaseSettings):
+    """Настройки для SQL"""
     sql_user: str
     sql_password: str
     sql_host: str
@@ -45,7 +47,7 @@ class Settings(BaseSettings):
 
 
 @lru_cache()
-def init_settings():
+def init_settings() -> object:
     """Инициализация настроек"""
     return Settings(jwt_settings=JwtSettings(), sql_settings=SqlSettings(),
                     yookassa_settings=YookassaSettings(), alembic_settings=AlembicSettings())

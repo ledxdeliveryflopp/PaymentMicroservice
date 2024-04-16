@@ -5,7 +5,7 @@ from src.payment.service import PaymentService
 from src.settings.depends import get_session
 
 
-async def get_payment_service(request: Request, session: AsyncSession = Depends(get_session)):
+async def get_payment_service(request: Request, session: AsyncSession = Depends(get_session)) -> object:
     """Инициализация сервиса оплаты"""
     payment_service = PaymentService(session=session, request=request)
     return payment_service

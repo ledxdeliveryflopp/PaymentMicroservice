@@ -8,7 +8,7 @@ class PaymentObjectModel(DefaultModel):
     __tablename__ = "object"
 
     title = Column(String, unique=True, nullable=False, index=True)
-    description = Column(String, unique=True, nullable=False, index=True)
+    description = Column(String, unique=False, nullable=False, index=True)
     price = Column(DECIMAL, nullable=False)
 
 
